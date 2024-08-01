@@ -13,7 +13,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public"))); // Serve static files from the 'public' directory
-app.use(cors());
+// app.use(cors());
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public", "index.html")); // Update path to point to 'public' directory
