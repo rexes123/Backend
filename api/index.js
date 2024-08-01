@@ -6,7 +6,7 @@ const { Pool } = require("pg");
 const cors = require("cors");
 require('dotenv').config();
 
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
