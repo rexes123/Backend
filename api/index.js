@@ -23,45 +23,45 @@ app.get("/test", (req, res) => {
   res.json({ message: "Test route working" });
 });
 
-// const { DATABASE_URL, SECRET_KEY } = process.env;
+const { DATABASE_URL, SECRET_KEY } = process.env;
 
 // Initialize the PostgreSQL connection
-// const pool = new Pool({
-//   connectionString: DATABASE_URL,
+ const pool = new Pool({
+   connectionString: DATABASE_URL,
 
-//   ssl: {
-//     // require: true,
-//     rejectUnauthorized: false,
-//   },
-// });
+   ssl: {
+     // require: true,
+     rejectUnauthorized: false,
+   },
+ });
 
-// (async () => {
-//   try {
-//     const client = await pool.connect();
-//     console.log('Database connected successfully');
-//     client.release();
-//   } catch (err) {
-//     console.error('Database connection error:', err);
-//   }
-// })();
+ (async () => {
+   try {
+     const client = await pool.connect();
+     console.log('Database connected successfully');
+     client.release();
+   } catch (err) {
+     console.error('Database connection error:', err);
+   }
+ })();
 
 // // Function to fetch PostgreSQL version
-// async function getPostgreSQLVersion() {
-//   const client = await pool.connect();
-//   try {
-//     const response = await client.query("SELECT VERSION()");
-//     // Print the first row containing version info
-//     console.log(response.rows[0]);
-//     // Return version information
-//     return response.rows[0];
-//   } catch (error) {
-//     console.error('Error:', error);
-//     res.status(500).send('Server Error');
-//   } finally {
-//     client.release();
-//   }
-// }
-// getPostgreSQLVersion();
+ async function getPostgreSQLVersion() {
+   const client = await pool.connect();
+   try {
+    const response = await client.query("SELECT VERSION()");
+     // Print the first row containing version info
+     console.log(response.rows[0]);
+     // Return version information
+     return response.rows[0];
+   } catch (error) {
+     console.error('Error:', error);
+     res.status(500).send('Server Error');
+   } finally {
+     client.release();
+   }
+ }
+getPostgreSQLVersion();
 
 // //fetch all post
 // app.get("/posts", async (req, res) => {
