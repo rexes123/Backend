@@ -52,6 +52,27 @@ app.get('/expenses', async function fetchExpense(req, res){
 }
 )
 
+app.post('/expenses', async function addExpense(req, res) {
+  const client = await pool.connect();
+  try {
+    const { subject, merchant, date, category, description, employee, total } = req.body;
+
+    const param = [subject, merchant, date, category, description, employee, total];
+    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, total) VALUES($1, $2, $3, $4, $5, $6, $7)';
+
+    const result = await client.query(query, param);
+    console.log(result);
+
+    res.status(200).json({ message: 'Expense added successfully!' });
+  } catch (error) {
+    console.error('Database query error:', error.message);
+    res.status(500).json({ error: 'Failed to add expense' });
+  } finally {
+    client.release();
+  }
+});
+
+
 
 
 app.use((req, res) => {
