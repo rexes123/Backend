@@ -37,37 +37,80 @@ const pool = new Pool({
   }
 })();
 
-app.get('/expenses', async function fetchExpense(req, res){
+app.get('/expenses', async function fetchExpense(req, res) {
   const client = await pool.connect();
-  try{
+  try {
     const query = await client.query("SELECT * FROM EXPENSES");
     console.log(query.rows);
     res.status(200).json(query.rows)
 
-  } catch(error){
+  } catch (error) {
     console.error(error.message);
-  } finally{
+  } finally {
     client.release();
   }
 }
 )
 
-app.post('/expenses', async function addExpense(req, res){
+app.post('/expenses', async function addExpense(req, res) {
   const client = await pool.connect();
-  try{
+  try {
     const { subject, merchant, date, category, description, employee, total, report } = req.body;
     const param = [subject, merchant, date, category, description, employee, total, report];
     const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, total, report) VALUES($1, $2, $3, $4, $5, $6, $7, $8)'
     const execute = client.query(query, param)
     console.log(execute)
-    
-  } catch(error){
+
+  } catch (error) {
     console.error(error.message);
-  } finally{
+  } finally {
     client.release();
   }
 
 })
+
+app.get('/trips', async function fetchTrips(req, res) {
+  const client = await pool.connect();
+  try {
+    const query = await client.query("SELECT * FROM TRIPS");
+    console.log(query.rows);
+    res.status(200).json(query.rows)
+
+  } catch (error) {
+    console.error(error.message);
+  } finally {
+    client.release();
+  }
+}
+)
+
+//post trips
+app.post('/trips', async function addTrip(req, res) {
+  const client = await pool.connect();
+  try {
+    const { name, type, purpose, flight, depart_from, destination, budget_limit,
+      start_date, end_date, check_in, check_out, hotel } = req.body;
+
+    // Validate the request
+    const param = [name, type, purpose, flight, depart_from, destination, budget_limit,
+      start_date, end_date, check_in, check_out, hotel];
+
+
+    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)'
+    await client.query(query, param)
+
+    res.status(201).json({
+      message: 'Trip added successfully'
+    })
+
+  } catch (error) {
+    console.error(error.message);
+  } finally {
+    client.release();
+  }
+})
+
+
 
 
 
