@@ -2,7 +2,7 @@ const express = require("express");
 
 var admin = require("firebase-admin");
 
-//Initialize firebase Admin SDK
+//Initialize firebase admin
 var serviceAccount = require("../serviceAccountKey.json");
 
 admin.initializeApp({

@@ -8,3 +8,5 @@
 *.png binary
 *.jpg binary
 *.pdf binary
+
+echo "* text=auto" > .gitattributes
