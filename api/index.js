@@ -1,4 +1,14 @@
 const express = require("express");
+
+var admin = require("firebase-admin");
+
+//Initialize firebase Admin SDK
+var serviceAccount = require("../serviceAccountKey.json.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
 const path = require("path");
 const app = express();
 
@@ -36,6 +46,31 @@ const pool = new Pool({
     console.error('Database connection error:', err);
   }
 })();
+
+//......................................admin.................................................
+app.post('/signup-admin', async(req, res)=>{
+  const {email, password} = req.body;
+  
+  try{
+    const signUpAcc = await admin.auth().createUser({
+      email: email,
+      password: password
+    });
+    res.status(201).json({
+      message: "Admin account created successfully,", 
+      uid: signUpAcc.uid
+    })
+  } catch(error){
+    console.error('Error creating admin account:', error);
+    res.status(500).json({
+      error: 'Failed to created admin account'
+    });
+  }
+});
+
+
+//......................................admin.................................................
+
 
 app.get('/expenses', async function fetchExpense(req, res) {
   const client = await pool.connect();
