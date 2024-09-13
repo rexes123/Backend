@@ -96,11 +96,13 @@ app.post('/trips', async function addTrip(req, res) {
       start_date, end_date, check_in, check_out, hotel, status];
 
 
-    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, status, travel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
-    await client.query(query, param)
+    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, status) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
+    const result = await client.query(query, param);
 
     res.status(201).json({
-      message: 'Trip added successfully'
+      message: 'Trip added successfully',
+      //to extract and retuth the details of the newly inserted trip from the database.
+      trip: result.rows[0]
     })
 
   } catch (error) {
