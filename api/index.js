@@ -89,14 +89,14 @@ app.post('/trips', async function addTrip(req, res) {
   const client = await pool.connect();
   try {
     const { name, type, purpose, flight, depart_from, destination, budget_limit,
-      start_date, end_date, check_in, check_out, hotel, status } = req.body;
+      start_date, end_date, check_in, check_out, hotel } = req.body;
 
     // Validate the request
     const param = [name, type, purpose, flight, depart_from, destination, budget_limit,
-      start_date, end_date, check_in, check_out, hotel, status];
+      start_date, end_date, check_in, check_out, hotel];
 
 
-    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, status) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
+    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 RETURNING *';
     const result = await client.query(query, param);
 
     res.status(201).json({
