@@ -3,7 +3,7 @@ const express = require("express");
 var admin = require("firebase-admin");
 
 //Initialize firebase Admin SDK
-var serviceAccount = require("../serviceAccountKey.json");
+var serviceAccount = require("../serviceAccountKey.json.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -15,10 +15,6 @@ const app = express();
 const { Pool } = require("pg");
 const cors = require("cors");
 require('dotenv').config();
-<<<<<<< HEAD
-const serviceAccountKey = process.env.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY;
-=======
->>>>>>> 5636fad59039d190a72317ec58300256313da540
 
 
 app.use(express.json());
@@ -51,7 +47,6 @@ const pool = new Pool({
   }
 })();
 
-<<<<<<< HEAD
 //......................................admin.................................................
 app.post('/signup-admin', async(req, res)=>{
   const {email, password} = req.body;
@@ -77,8 +72,6 @@ app.post('/signup-admin', async(req, res)=>{
 //......................................admin.................................................
 
 
-=======
->>>>>>> 5636fad59039d190a72317ec58300256313da540
 app.get('/expenses', async function fetchExpense(req, res) {
   const client = await pool.connect();
   try {
