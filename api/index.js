@@ -88,15 +88,18 @@ app.get('/trips', async function fetchTrips(req, res) {
 app.post('/trips', async function addTrip(req, res) {
   const client = await pool.connect();
   try {
-    const { name, type, purpose, flight, depart_from, destination, budget_limit,
-      start_date, end_date, check_in, check_out, hotel, status } = req.body;
+    // const { name, type, purpose, flight, depart_from, destination, budget_limit,
+    //   start_date, end_date, check_in, check_out, hotel, status } = req.body;
+    const { name } = req.body;
+
 
     // Validate the request
-    const param = [name, type, purpose, flight, depart_from, destination, budget_limit,
-      start_date, end_date, check_in, check_out, hotel, status];
+    // const param = [name, type, purpose, flight, depart_from, destination, budget_limit,
+    //   start_date, end_date, check_in, check_out, hotel, status];
+    const param = [name];
 
-
-    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, status, travel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
+    // const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, status, travel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *';
+    const query = 'INSERT INTO trips(name) VALUES($1) RETURNING *';
     await client.query(query, param)
 
     res.status(201).json({
