@@ -96,7 +96,7 @@ app.post('/trips', async function addTrip(req, res) {
       start_date, end_date, check_in, check_out, hotel];
 
 
-    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 RETURNING *';
+    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *';
     const result = await client.query(query, param);
 
     res.status(201).json({
@@ -106,7 +106,7 @@ app.post('/trips', async function addTrip(req, res) {
     })
 
   } catch (error) {
-    console.error(error.message);
+    console.error('Database error:', error.message);
     res.status(500).json({
       error:'Internal Server Error'
     })
