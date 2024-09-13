@@ -69,6 +69,41 @@ app.post('/signup-admin', async(req, res)=>{
 });
 
 
+app.post('/login-admin', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Authenticate the user
+    const user = await admin.auth().getUserByEmail(email);
+    
+    if (!user) {
+      return res.status(401).json({
+        error: 'Admin account does not exist'
+      });
+    }
+
+    // Verify the password (Firebase Authentication SDK does not provide a direct way to verify passwords server-side,
+    // so you typically handle login on the client-side. But for backend checks, consider using custom tokens or additional services)
+    
+    // Firebase Admin SDK does not have a method to verify passwords directly
+    // Consider implementing a custom solution or use Firebase client SDK for password verification
+
+    // Create a custom token
+    const token = await admin.auth().createCustomToken(user.uid);
+
+    res.status(200).json({
+      message: 'Login successful',
+      token: token
+    });
+  } catch (error) {
+    console.error('Error logging in admin:', error);
+    res.status(500).json({
+      error: 'Failed to login admin account'
+    });
+  }
+});
+
+
 //......................................admin.................................................
 
 
