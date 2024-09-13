@@ -3,7 +3,7 @@ const express = require("express");
 var admin = require("firebase-admin");
 
 //Initialize firebase Admin SDK
-var serviceAccount = require("../serviceAccountKey.json.json");
+var serviceAccount = require("../serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -15,6 +15,7 @@ const app = express();
 const { Pool } = require("pg");
 const cors = require("cors");
 require('dotenv').config();
+const serviceAccountKey = process.env.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY;
 
 
 app.use(express.json());
