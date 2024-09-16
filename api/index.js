@@ -141,7 +141,7 @@ app.post('/trips/user/:uid', async function addTrip(req, res){
 
   try{
     const { name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel } = req.body;
-    const uid = req.param.uid; // Extract uid from route parameters
+    const uid = req.params.uid; // Extract uid from route parameters
 
     // Validate the request
     const param = [name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid];
