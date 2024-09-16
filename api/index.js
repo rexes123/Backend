@@ -1,14 +1,5 @@
 const express = require("express");
 
-var admin = require("firebase-admin");
-
-//Initialize firebase admin
-var serviceAccount = require("../serviceAccountKey.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
 const path = require("path");
 const app = express();
 
@@ -96,29 +87,37 @@ app.get('/trips', async function fetchTrips(req, res) {
 )
 
 
-// app.get("trips/user/uid", async (req, res)=>{
-//   const client = await pool.connect();
+ app.get("trips/user/:uid", async (req, res)=>{
+   const client = await pool.connect();
 
-//   try{
-
-//   } catch{
+   try{
+    const { uid } = req.params;
+    const query = "SELECT * FROM trips WHERE uid = $1";
+    const params = [uid];
+    const trips = await client.query(query, params);
+    res.status(200).json(trips.rows);
     
-//   }
-// })
+   } catch(error){
+    console.error(error.message);
+    res.status(500).json('Server Error');
+   } finally{
+    client.release();
+   }
+ })
 
 //post trips
 app.post('/trips', async function addTrip(req, res) {
   const client = await pool.connect();
   try {
     const { name, type, purpose, flight, depart_from, destination, budget_limit,
-      start_date, end_date, check_in, check_out, hotel } = req.body;
+      start_date, end_date, check_in, check_out, hotel, uid } = req.body;
 
     // Validate the request
     const param = [name, type, purpose, flight, depart_from, destination, budget_limit,
-      start_date, end_date, check_in, check_out, hotel];
+      start_date, end_date, check_in, check_out, hotel, uid];
 
 
-    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *';
+    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
     const result = await client.query(query, param);
 
     res.status(201).json({
