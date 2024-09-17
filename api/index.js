@@ -105,8 +105,7 @@ app.get('/trips/user/:uid', async (req, res) => {
     const query = "SELECT * FROM trips WHERE uid = $1";
     const params = [uid];
     const result = await client.query(query, params);
-
-    res.status(200).json({ trips: result.rows });
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error('Database query error:', error.message);
     res.status(500).json({ error: 'Server Error' });
@@ -146,43 +145,6 @@ app.post('/trips', async function addTrip(req, res) {
     client.release();
   }
 })
-
-app.post('/trips/user/:uid', async function addTrip(req, res){
-  const client = await pool.connect();
-
-  try{
-    const { name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel } = req.body;
-    const uid = req.params.uid; // Extract uid from route parameters
-
-    // Correct SQL query with proper column names and syntax
-    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *';
-
-
-    // Validate the request
-    const param = [name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid];
-
-    // Execute the query
-    const result = await client.query(query, param);
-
-    res.status(201).json({
-      message: 'Trip added successfully',
-      trip: result.rows[0]
-    });
-  } catch(error){
-    console.error('Database error:', error.message);
-    res.status(500).json({
-      error: 'Internal Server Error'
-    });
-  } finally{
-    client.release();
-  }
-});
-
-
-
-
-
-
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "../public", "error.html")); // Update path to point to 'public' directory
