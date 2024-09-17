@@ -74,7 +74,7 @@ app.post('/expenses', async function addExpense(req, res) {
 app.get('/trips', async function fetchTrips(req, res) {
   const client = await pool.connect();
   try {
-    const query = await client.query("SELECT * FROM TRIPS");
+    const query = await client.query("SELECT * FROM trips");
     console.log(query.rows);
     res.status(200).json(query.rows)
 
@@ -86,24 +86,35 @@ app.get('/trips', async function fetchTrips(req, res) {
 }
 )
 
+app.get('/test', (req, res)=>{
+  res.send('Test route is working');
+})
 
- app.get("trips/user/:uid", async (req, res)=>{
-   const client = await pool.connect();
 
-   try{
+app.get('/trips/user/:uid', async (req, res) => {
+  const client = await pool.connect();
+
+  try {
     const { uid } = req.params;
+
+    if (!uid) {
+      return res.status(400).json({ error: 'Invalid UID parameter' });
+    }
+
+    // Correct SQL query
     const query = "SELECT * FROM trips WHERE uid = $1";
     const params = [uid];
-    const trips = await client.query(query, params);
-    res.status(200).json(trips.rows);
-    
-   } catch(error){
-    console.error(error.message);
-    res.status(500).json('Server Error');
-   } finally{
+    const result = await client.query(query, params);
+
+    res.status(200).json({ trips: result.rows });
+  } catch (error) {
+    console.error('Database query error:', error.message);
+    res.status(500).json({ error: 'Server Error' });
+  } finally {
     client.release();
-   }
- })
+  }
+});
+
 
 //post trips
 app.post('/trips', async function addTrip(req, res) {
@@ -117,7 +128,7 @@ app.post('/trips', async function addTrip(req, res) {
       start_date, end_date, check_in, check_out, hotel, uid];
 
 
-    const query = 'INSERT INTO trips(name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
+    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
     const result = await client.query(query, param);
 
     res.status(201).json({
@@ -143,11 +154,14 @@ app.post('/trips/user/:uid', async function addTrip(req, res){
     const { name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel } = req.body;
     const uid = req.params.uid; // Extract uid from route parameters
 
+    // Correct SQL query with proper column names and syntax
+    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *';
+
+
     // Validate the request
     const param = [name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid];
 
-    // Correct SQL query with proper column names and syntax
-    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning *'
+    // Execute the query
     const result = await client.query(query, param);
 
     res.status(201).json({
