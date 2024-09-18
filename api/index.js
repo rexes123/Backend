@@ -59,17 +59,23 @@ app.post('/expenses', async function addExpense(req, res) {
   try {
     const { subject, merchant, date, category, description, employee, total, report } = req.body;
     const param = [subject, merchant, date, category, description, employee, total, report];
-    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, total, report) VALUES($1, $2, $3, $4, $5, $6, $7, $8)'
-    const execute = client.query(query, param)
-    console.log(execute)
-
+    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, total, report) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+    
+    // Await the execution of the query
+    const result = await client.query(query, param);
+    console.log(result.rows[0]); // Log the newly created expense
+    
+    // Send a response back to the client
+    res.status(201).json({ message: 'Expense added successfully', expense: result.rows[0] });
+    
   } catch (error) {
     console.error(error.message);
+    // Send a response indicating the error
+    res.status(500).json({ message: 'Failed to add expense', error: error.message });
   } finally {
     client.release();
   }
-
-})
+});
 
 app.get('/trips', async function fetchTrips(req, res) {
   const client = await pool.connect();
@@ -115,14 +121,14 @@ app.get('/trips/user/:uid', async (req, res) => {
 });
 
 //Delete expense endpoint
-app.delete('/expenses/:id', async(req, res)=>{
+app.delete('/expenses/:id', async (req, res) => {
   const { id } = req.params;// Get ID from request parameters
 
-  try{
+  try {
     // Query to delete expense
     const result = await pool.query('DELETE FROM expenses WHERE id = $1 RETURNING *', [id]);
 
-    if (result.rowCount === 0){
+    if (result.rowCount === 0) {
       return res.status(404).json({
         message: 'Expense not found'
       });
@@ -132,7 +138,7 @@ app.delete('/expenses/:id', async(req, res)=>{
       message: 'Expense deleted successfully',
       expense: result.rows[0]
     })
-  } catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       message: 'Server Error'
