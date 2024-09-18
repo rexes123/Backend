@@ -114,6 +114,31 @@ app.get('/trips/user/:uid', async (req, res) => {
   }
 });
 
+//Delete expense endpoint
+app.delete('/expenses/:id', async(req, res)=>{
+  const { id } = req.params;// Get ID from request parameters
+
+  try{
+    // Query to delete expense
+    const result = await pool.query('DELETE FROM expenses WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rowCount === 0){
+      return res.status(404).json({
+        message: 'Expense not found'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Expense deleted successfully',
+      expense: result.rows[0]
+    })
+  } catch(error){
+    console.error(error);
+    res.status(500).json({
+      message: 'Server Error'
+    })
+  }
+})
 
 //post trips
 app.post('/trips', async function addTrip(req, res) {
@@ -174,6 +199,8 @@ app.put('/trips/:id', async (req, res) => {
     client.release();
   }
 })
+
+
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, "../public", "error.html")); // Update path to point to 'public' directory
