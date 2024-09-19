@@ -57,9 +57,9 @@ app.get('/expenses', async function fetchExpense(req, res) {
 app.post('/expenses', async function addExpense(req, res) {
   const client = await pool.connect();
   try {
-    const { subject, merchant, date, category, description, employee, total, report } = req.body;
-    const param = [subject, merchant, date, category, description, employee, total, report];
-    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, total, report) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+    const { subject, merchant, date, category, description, employee, amount, report } = req.body;
+    const param = [subject, merchant, date, category, description, employee, amount, report];
+    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, amount, report) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
     
     // Await the execution of the query
     const result = await client.query(query, param);
@@ -177,15 +177,17 @@ app.delete('/trips/:id', async(req, res)=>{
 app.post('/trips', async function addTrip(req, res) {
   const client = await pool.connect();
   try {
-    const { name, type, purpose, flight, depart_from, destination, budget_limit,
+    const { name, type, purpose, flight, depart_from, destination, amount,
       start_date, end_date, check_in, check_out, hotel, uid } = req.body;
 
+       console.log(req.body);
+
     // Validate the request
-    const param = [name, type, purpose, flight, depart_from, destination, budget_limit,
+    const param = [name, type, purpose, flight, depart_from, destination, amount,
       start_date, end_date, check_in, check_out, hotel, uid];
 
 
-    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, budget_limit, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
+    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, amount, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
     const result = await client.query(query, param);
 
     res.status(201).json({
