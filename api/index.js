@@ -140,6 +140,33 @@ app.delete('/expenses/:id', async(req, res)=>{
   }
 })
 
+
+//Delete trip endpoint
+app.delete('/trips/:id', async(req, res)=>{
+  const { id } = req.params;// Get ID from request parameters
+
+  try{
+    // Query to delete expense
+    const result = await pool.query('DELETE FROM trips WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rowCount === 0){
+      return res.status(404).json({
+        message: 'Trip not found'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Trip deleted successfully',
+      expense: result.rows[0]
+    })
+  } catch(error){
+    console.error(error);
+    res.status(500).json({
+      message: 'Server Error'
+    })
+  }
+})
+
 //post trips
 app.post('/trips', async function addTrip(req, res) {
   const client = await pool.connect();
@@ -171,6 +198,7 @@ app.post('/trips', async function addTrip(req, res) {
   }
 })
 
+//Update trip status
 app.put('/trips/:id', async (req, res) => {
   const client = await pool.connect();
 
