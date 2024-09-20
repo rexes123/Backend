@@ -57,9 +57,9 @@ app.get('/expenses', async function fetchExpense(req, res) {
 app.post('/expenses', async function addExpense(req, res) {
   const client = await pool.connect();
   try {
-    const { subject, merchant, date, category, description, employee, amount, report } = req.body;
-    const param = [subject, merchant, date, category, description, employee, amount, report];
-    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, amount, report) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+    const { subject, merchant, date, category, description, employee, amount, report, invoiceUrl } = req.body;
+    const param = [subject, merchant, date, category, description, employee, amount, report, invoiceUrl];
+    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, amount, report, invoiceUrl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *';
     
     // Await the execution of the query
     const result = await client.query(query, param);
