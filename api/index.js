@@ -209,34 +209,70 @@ app.post('/trips', async function addTrip(req, res) {
 })
 
 //Update trip status
+// app.put('/trips/:id', async (req, res) => {
+//   const client = await pool.connect();
+
+//   try {
+//     const { status } = req.body;
+//     const { id } = req.params;
+
+//     console.log('Updating status:', status, 'for trip ID: ', id);
+
+//     //Update the trip status
+//     const result = await client.query(
+//       'UPDATE trips SET status = $1 WHERE id = $2 RETURNING *',
+//       [status, id]
+//     );
+
+//     if (result.rows.length > 0) {
+//       res.json(result.rows[0]);
+//     } else {
+//       res.status(404).json({
+//         error: 'Trip not found'
+//       });
+//     }
+//   } catch (error) {
+//     console.error('Error updating trip status:', error.message);
+//     res.status(500).json({
+//       error: 'Internal Server error'
+//     });
+//   } finally {
+//     client.release();
+//   }
+// });
+
 app.put('/trips/:id', async (req, res) => {
   const client = await pool.connect();
 
   try {
-    const { status } = req.body;
+    const { name, category, amount, status } = req.body; // Extract all fields you need
     const { id } = req.params;
 
+    console.log('Updating trip:', req.body, 'for trip ID: ', id);
+
+    // Update the trip details
     const result = await client.query(
-      'UPDATE trips SET status = $1 WHERE id = $2 RETURNING *',
-      [status, id]
+      'UPDATE trips SET name = $1, category = $2, amount = $3, status = $4 WHERE id = $5 RETURNING *',
+      [name, category, amount, status, id]
     );
 
     if (result.rows.length > 0) {
       res.json(result.rows[0]);
     } else {
       res.status(404).json({
-        error: 'Trip not found'
+        error: 'Trip not found',
       });
     }
   } catch (error) {
-    console.error('Error updating trip status:', error.message);
+    console.error('Error updating trip:', error.message);
     res.status(500).json({
-      error: 'Internal Server error'
+      error: 'Internal Server error',
     });
   } finally {
     client.release();
   }
-})
+});
+
 
 
 
