@@ -269,6 +269,7 @@ app.put('/expenses/status/:id', async (req, res)=>{
       [status, expenseId]
     );
 
+    //Update the expense status
     if(result.rowCount === 0){
       return res.status(404).json({
         message: 'Expense not found'
@@ -277,7 +278,7 @@ app.put('/expenses/status/:id', async (req, res)=>{
 
     res.status(200).json({
       message: "Expense status updated successfully",
-      trip: result.rows[0]
+      expense: result.rows[0]
     })
 
   } catch (error){
