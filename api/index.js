@@ -209,45 +209,45 @@ app.post('/trips', async function addTrip(req, res) {
 })
 
 //Trips
-// app.put('/trips/status/:id', async (req, res)=>{
-//   const client = await pool.connect();
-//   //to get id from frontend
-//   const tripId = parseInt(req.params.id);
-//   const { status } = req.body;
+ app.put('/trips/status/:id', async (req, res)=>{
+   const client = await pool.connect();
+   //to get id from frontend
+   const tripId = parseInt(req.params.id);
+   const { status } = req.body;
 
-//   if(!status){
-//     return res.status(400).json({
-//       message: 'Status is required'
-//     });
-//   }
+   if(!status){
+     return res.status(400).json({
+       message: 'Status is required'
+     });
+   }
 
-//   try{
-//     const result = await client.query(
-//       'UPDATE trips SET status = $1 WHERE id = $2 RETURNING *', 
-//       [status, tripId]
-//     );
+   try{
+     const result = await client.query(
+       'UPDATE trips SET status = $1 WHERE id = $2 RETURNING *', 
+       [status, tripId]
+     );
 
-//     if(result.rowCount === 0){
-//       return res.status(404).json({
-//         message: 'Trip not found'
-//       });
-//     }
+     if(result.rowCount === 0){
+       return res.status(404).json({
+         message: 'Trip not found'
+       });
+     }
 
-//     res.status(200).json({
-//       message: "Trip status updated successfully",
-//       trip: result.rows[0]
-//     })
+     res.status(200).json({
+       message: "Trip status updated successfully",
+       trip: result.rows[0]
+     })
 
-//   } catch (error){
-//     console.error('Error updating trip status:', error.message);
-//     res.status(500).json({
-//       message: 'Internal Server Error'
-//     })
+   } catch (error){
+     console.error('Error updating trip status:', error.message);
+     res.status(500).json({
+       message: 'Internal Server Error'
+     })
 
-//   } finally{
-//     client.release();
-//   }
-// });
+   } finally{
+     client.release();
+   }
+ });
 
 
 //Expenses
