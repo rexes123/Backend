@@ -59,9 +59,9 @@ app.get('/expenses', async function fetchExpense(req, res) {
 app.post('/expenses', async function addExpense(req, res) {
   const client = await pool.connect();
   try {
-    const { subject, merchant, date, category, description, employee, team, amount, report, invoiceUrl } = req.body;
-    const param = [subject, merchant, date, category, description, employee, team, amount, report, invoiceUrl];
-    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, team, amount, report, invoiceUrl) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *';
+    const { subject, merchant, date, category, description, employee, team, amount, report, invoiceUrl, user_email } = req.body;
+    const param = [subject, merchant, date, category, description, employee, team, amount, report, invoiceUrl, user_email];
+    const query = 'INSERT INTO EXPENSES(subject, merchant, date, category, description, employee, team, amount, report, invoiceUrl, user_email) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *';
     
     // Await the execution of the query
     const result = await client.query(query, param);
@@ -71,7 +71,8 @@ app.post('/expenses', async function addExpense(req, res) {
     res.status(201).json({ message: 'Expense added successfully', expense: result.rows[0] });
     
   } catch (error) {
-    console.error(error.message);
+    // console.error(error.message);
+    console.error('Error adding expense:', error.message, req.body);
     // Send a response indicating the error
     res.status(500).json({ message: 'Failed to add expense', error: error.message });
   } finally {
