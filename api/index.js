@@ -80,6 +80,23 @@ app.post('/expenses', async function addExpense(req, res) {
   }
 });
 
+app.get("/expenses/user/:uid", async (req, res)=>{
+  const client = await pool.connect();
+
+  try{
+    const query = "SELECT * FROM EXPENSES WHERE uid = $1";
+    const params = [req.params.uid];
+    const booking = await client.query(query, params);
+    res.status(200).json(booking.rows);
+
+  } catch(error){
+    console.error(error.message);
+    res.status(500).json('Server Error');
+  } finally{
+    client.release();
+  }
+})
+
 app.get('/trips', async function fetchTrips(req, res) {
   const client = await pool.connect();
   try {
