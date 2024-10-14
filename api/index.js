@@ -214,13 +214,6 @@ app.post('/trips', async function addTrip(req, res) {
 
        console.log(req.body);
 
-       // Validate the request:
-       if(!name || !type || !purpose || !depart_from || !destination || !amount == null || !check_in || !check_out || !hotel || uid){
-        return res.status(400).json({
-          error: 'All field are required'
-        });
-       }
-
     // Validate the request
     const param = [name, type, purpose, flight, depart_from, destination, amount, check_in, check_out, hotel, uid];
 
