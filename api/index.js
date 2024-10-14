@@ -215,18 +215,16 @@ app.post('/trips', async function addTrip(req, res) {
        console.log(req.body);
 
        // Validate the request:
-       if(!name || !type || !purpose || !depart_from || !destination || !amount == null || !start_date || !check_in || !check_out || !hotel || uid){
+       if(!name || !type || !purpose || !depart_from || !destination || !amount == null || !check_in || !check_out || !hotel || uid){
         return res.status(400).json({
           error: 'All field are required'
         });
        }
 
     // Validate the request
-    const param = [name, type, purpose, flight, depart_from, destination, amount,
-      start_date, end_date, check_in, check_out, hotel, uid];
+    const param = [name, type, purpose, flight, depart_from, destination, amount, check_in, check_out, hotel, uid];
 
-
-    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, amount, start_date, end_date, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
+    const query = 'INSERT INTO trips (name, type, purpose, flight, depart_from, destination, amount, check_in, check_out, hotel, uid) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *';
     const result = await client.query(query, param);
 
     res.status(201).json({
