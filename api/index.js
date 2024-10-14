@@ -97,6 +97,7 @@ app.get("/expenses/user/:uid", async (req, res)=>{
   }
 })
 
+
 app.get('/trips', async function fetchTrips(req, res) {
   const client = await pool.connect();
   try {
@@ -111,6 +112,17 @@ app.get('/trips', async function fetchTrips(req, res) {
   }
 }
 )
+
+// app.get("/trips/user/:uid", async (req, res)=>{
+//   const client = await pool.connect();
+
+//   try{
+//      const query = "SELECT * FROM TRIPS WHERE uid = $1";
+//   } catch{
+
+//   }
+// })
+
 
 app.get('/test', (req, res) => {
   res.send('Test route is working');
@@ -198,9 +210,16 @@ app.post('/trips', async function addTrip(req, res) {
   const client = await pool.connect();
   try {
     const { name, type, purpose, flight, depart_from, destination, amount,
-      start_date, end_date, check_in, check_out, hotel, uid } = req.body;
+      check_in, check_out, hotel, uid } = req.body;
 
        console.log(req.body);
+
+       // Validate the request:
+       if(!name || !type || !purpose || !depart_from || !destination || !amount == null || !start_date || !check_in || !check_out || !hotel || uid){
+        return res.status(400).json({
+          error: 'All field are required'
+        });
+       }
 
     // Validate the request
     const param = [name, type, purpose, flight, depart_from, destination, amount,
